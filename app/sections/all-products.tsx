@@ -19,72 +19,87 @@ interface AllProductsProps extends HydrogenComponentProps {
   paddingBottom: number;
 }
 
-let AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
-  let {
+const AllProducts = forwardRef<HTMLElement, AllProductsProps>((props, ref) => {
+  const {
     heading,
-    prevPageText,
-    nextPageText,
-    paddingTop,
-    paddingBottom,
+    prevPageText = "Previous",
+    nextPageText = "Next",
+    paddingTop = 32,
+    paddingBottom = 32,
     ...rest
   } = props;
-  let { products } = useLoaderData<AllProductsQuery>();
+  const { products } = useLoaderData<AllProductsQuery>();
 
   return (
-    <section ref={ref} {...rest}>
-      <div
-        style={{
-          paddingTop: `${paddingTop}px`,
-          paddingBottom: `${paddingBottom}px`,
-        }}
-      >
-        <PageHeader heading={heading} variant="allCollections" />
-        <Section>
-          <Pagination connection={products}>
-            {({ nodes, isLoading, NextLink, PreviousLink }) => {
-              let itemsMarkup = nodes.map((product, i) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  loading={getImageLoadingPriority(i)}
-                />
-              ));
+    <section
+      ref={ref}
+      {...rest}
+      className="flex flex-col items-center w-full"
+      style={{
+        paddingTop: `${paddingTop}px`,
+        paddingBottom: `${paddingBottom}px`,
+      }}
+    >
+      <PageHeader heading={heading} variant="allCollections" />
+      <Section>
+        <Pagination connection={products}>
+          {({ nodes, isLoading, NextLink, PreviousLink }) => {
+            const itemsMarkup = nodes.map((product, i) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                loading={getImageLoadingPriority(i)}
+              />
+            ));
 
-              return (
-                <>
-                  <div className="flex items-center justify-center mt-6">
-                    <PreviousLink className="inline-block rounded font-medium text-center py-3 px-6 border border-line/10 text-body w-full">
-                      {isLoading ? "Loading..." : prevPageText}
-                    </PreviousLink>
-                  </div>
-                  <Grid data-test="product-grid">{itemsMarkup}</Grid>
-                  <div className="flex items-center justify-center mt-6">
-                    <NextLink className="inline-block rounded font-medium text-center py-3 px-6 border border-line/10 text-body w-full">
-                      {isLoading ? "Loading..." : nextPageText}
-                    </NextLink>
-                  </div>
-                </>
-              );
-            }}
-          </Pagination>
-        </Section>
-      </div>
+            return (
+              <div>
+                {/* Previous Button */}
+                <div className="flex items-center justify-center mt-4">
+                  <PreviousLink
+                    className="inline-block rounded-md font-medium text-center py-3 px-6 border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring w-auto"
+                  >
+                    {isLoading ? "Loading..." : prevPageText}
+                  </PreviousLink>
+                </div>
+
+                {/* Product Grid */}
+                <Grid
+                  data-test="product-grid"
+                  className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                >
+                  {itemsMarkup}
+                </Grid>
+
+                {/* Next Button */}
+                <div className="flex items-center justify-center mt-4">
+                  <NextLink
+                    className="inline-block rounded-md font-medium text-center py-3 px-6 border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring w-auto"
+                  >
+                    {isLoading ? "Loading..." : nextPageText}
+                  </NextLink>
+                </div>
+              </div>
+            );
+          }}
+        </Pagination>
+      </Section>
     </section>
   );
 });
 
 export default AllProducts;
 
-export let schema: HydrogenComponentSchema = {
+export const schema: HydrogenComponentSchema = {
   type: "all-products",
-  title: "All products",
+  title: "All Products",
   limit: 1,
   enabledOn: {
     pages: ["ALL_PRODUCTS"],
   },
   inspector: [
     {
-      group: "All products",
+      group: "All Products",
       inputs: [
         {
           type: "text",
@@ -96,21 +111,21 @@ export let schema: HydrogenComponentSchema = {
         {
           type: "text",
           name: "prevPageText",
-          label: "Previous page text",
+          label: "Previous Page Text",
           defaultValue: "Previous",
           placeholder: "Previous",
         },
         {
           type: "text",
           name: "nextPageText",
-          label: "Next page text",
+          label: "Next Page Text",
           defaultValue: "Next",
           placeholder: "Next",
         },
         {
           type: "range",
-          label: "Top padding",
           name: "paddingTop",
+          label: "Top Padding",
           configs: {
             min: 0,
             max: 100,
@@ -121,8 +136,8 @@ export let schema: HydrogenComponentSchema = {
         },
         {
           type: "range",
-          label: "Bottom padding",
           name: "paddingBottom",
+          label: "Bottom Padding",
           configs: {
             min: 0,
             max: 100,
