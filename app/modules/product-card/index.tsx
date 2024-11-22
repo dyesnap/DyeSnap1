@@ -49,7 +49,7 @@ export function ProductCard({
             </Link>
           )}
           {cardLabel && (
-            <ProductTag className="absolute top-2.5 right-2.5 bg-background text-body uppercase">
+            <ProductTag className="absolute top-2.5 right-2.5 bg-red-500 text-white text-xs font-bold uppercase px-2 py-1 rounded">
               {cardLabel}
             </ProductTag>
           )}
